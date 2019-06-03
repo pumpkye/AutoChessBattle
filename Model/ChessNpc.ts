@@ -30,7 +30,7 @@ export class ChessNpc {
     readonly baseData: ChessNpcBaseData;
     protected _skillList: Array<ChessSkill>;
     protected _buffArr: Array<ChessBuff>;
-    protected _buffStateArr: Array<boolean>;
+    protected _buffStateArr: Array<number>;
     // protected _attrChangeMap: Map<string, Array<AttrChangeInfo>>;
     protected _attrChangeMap: { [index: string]: Array<AttrChangeInfo> };
     protected _shieldMap: { [index: string]: Array<ChessShield> };
@@ -462,20 +462,21 @@ export class ChessNpc {
         this._skillList = new Array();
         let normalSkill = new NormalSkill(this.normalSkillId, this);
         this._skillList.push(normalSkill);
-        let skill = new ChessSkill(this.skillId, this.level);
-        if (skill.isActive) {
-            this._skillList.push(skill);
-        } else {
-            skill.play(this);
+        if (this.skillId != 0) {
+            let skill = new ChessSkill(this.skillId, this.level);
+            if (skill.isActive) {
+                this._skillList.push(skill);
+            } else {
+                skill.play(this);
+            }
         }
-
     }
 
     /**
      * 选择一个当前可用的技能
      */
     getCurSkill(): ChessSkill {
-        let curSkill = null;
+        let curSkill: ChessSkill = null;
         for (let i = 0; i < this._skillList.length; i++) {
             const skill = this._skillList[i];
             if (skill.id == this.normalSkillId &&
@@ -487,7 +488,7 @@ export class ChessNpc {
                 && skill.id == this.skillId) {
                 continue
             }
-            if (skill.curCdTime == 0 && this.mp >= skill.mpCost) {
+            if (skill.curCdTime <= 0 && this.mp >= skill.mpCost) {
                 if (!curSkill) {
                     curSkill = skill;
                 } else if (skill.mpCost > curSkill.mpCost) {
@@ -548,19 +549,25 @@ export class ChessNpc {
     // }
 
     addBuffState(state: BuffAndDotState) {
-        this._buffStateArr[state] = true;
+        if (!this._buffStateArr[state]) {
+            this._buffStateArr[state] = 0;
+        }
+        this._buffStateArr[state] = this._buffStateArr[state] + 1;
     }
 
     removeBuffState(state: BuffAndDotState) {
-        this._buffStateArr[state] = false;
+        if (!this._buffStateArr[state]) {
+            this._buffStateArr[state] = 0;
+        }
+        this._buffStateArr[state] = this._buffStateArr[state] - 1;
     }
 
     hasBuffState(state: BuffAndDotState) {
-        let ret = this._buffStateArr[state];
-        if (ret == null) {
-            ret = false;
+        let count = this._buffStateArr[state];
+        if (!count || count == 0) {
+            return false;
         }
-        return ret
+        return true
     }
 
     public setTarget(target: ChessNpc) {

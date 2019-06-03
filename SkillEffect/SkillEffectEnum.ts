@@ -166,7 +166,7 @@ export enum BuffAndDotState {
     /**
      * 技能免疫
      */
-    bkb = 0,
+    bkb = 1,
     /**
      * 眩晕
      */

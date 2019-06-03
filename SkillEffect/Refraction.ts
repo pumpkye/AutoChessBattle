@@ -28,10 +28,8 @@ export class Refraction extends BaseSkillEffect {
         let mTime = skillEff[2];
         let lifeTime = skillEff[3];
         let shield = new AddDamageShield(lifeTime, aTime, defender, damage);
-        console.log(shield);
         defender.addShield(shield);
         shield = new MissDamageShield(lifeTime, mTime, defender, null);
-        console.log(shield);
 
         defender.addShield(shield);
         return true;

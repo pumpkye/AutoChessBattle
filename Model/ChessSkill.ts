@@ -110,7 +110,10 @@ export class ChessSkill {
         switch (this.baseData.targetType) {
             case SkillTargetType.enemy:
                 if (!defender || defender.isDead || defender.hasBuffState(BuffAndDotState.bkb)
-                    || !g_Util.checkPosShortInRange(attacker.posX, attacker.posY, attacker.curTarget.posX, attacker.curTarget.posY, this.levelData.range)) {
+                    || !g_Util.checkPosShortInRange(attacker.posX, attacker.posY, defender.posX, defender.posY, this.levelData.range)) {
+                    if (defender && defender.hasBuffState(BuffAndDotState.bkb)) {
+                        printBattleMsg(pTag.battle, pBattleAction.bkb, { defender });
+                    }
                     return;
                 }
                 break;
@@ -215,11 +218,12 @@ export class NormalSkill extends ChessSkill {
         //判断是否暴击
         let critInfos = attacker.getAttrChange("crit")
         if (critInfos && critInfos.length > 0) {
+            let tempDamage = damage;
             for (let i = 0; i < critInfos.length; i++) {
                 const info = critInfos[i];
                 let rad = g_AutoBattleManager.getRandomNumber(100);
                 if (rad <= info.info.per) {
-                    damage = Math.max(damage, damage * info.info.mul / 100);
+                    damage = Math.max(damage, tempDamage * info.info.mul / 100);
                 }
             }
             if (damage > attacker.damage) {
@@ -229,7 +233,7 @@ export class NormalSkill extends ChessSkill {
                 if (silentInfos && silentInfos.length > 0) {
                     let buff = new ChessBuff(silentInfos[0].info, 0, defender, null, BuffAndDotState.silent);
                     defender.addBuff(buff);
-                    printBattleMsg(pTag.battle, pBattleAction.critSilent, { attacker: attacker, defender: defender, time: silentInfos[1].info });
+                    printBattleMsg(pTag.battle, pBattleAction.critSilent, { attacker: attacker, defender: defender, time: silentInfos[0].info });
                 }
                 //血之祭祀的血量回复
                 let bloodInfos = attacker.getAttrChange("bloodSacrifice");
@@ -237,6 +241,7 @@ export class NormalSkill extends ChessSkill {
                     for (let i = 0; i < bloodInfos.length; i++) {
                         const info = bloodInfos[i].info;
                         let recoverHp = damage * info / 100;
+                        printBattleMsg(pTag.battle, pBattleAction.bloodSacrificeRecoverHp, { hp: recoverHp });
                         attacker.reduceHp(-recoverHp);
                     }
                 }
@@ -259,8 +264,10 @@ export class NormalSkill extends ChessSkill {
                 effInfo.init(SkillEffectEnum.damage, [damage, damageType]);
                 for (let j = 0; j < hitList.length; j++) {
                     const npc = hitList[j];
-                    let effData = new EffData(effInfo, attacker, npc);
-                    skillEffects[SkillEffectEnum.damage].play(effData);
+                    if (npc.thisId != defender.thisId) {
+                        let effData = new EffData(effInfo, attacker, npc);
+                        skillEffects[SkillEffectEnum.damage].play(effData);
+                    }
                 }
             }
         }

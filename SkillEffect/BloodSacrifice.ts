@@ -1,5 +1,5 @@
 import { BaseSkillEffect } from "./BaseSkillEffect";
-import { SkillEffectEnum } from "./SkillEffectEnum";
+import { SkillEffectEnum, BuffAndDotState } from "./SkillEffectEnum";
 import { EffData } from "../Model/EffectInfo";
 import { ChessBuff } from "../Model/ChessBuff";
 /**
@@ -29,10 +29,11 @@ export class BloodSacrifice extends BaseSkillEffect {
 
         let damage = Math.floor(data.defender.hp * damagePer / 100);
         let hurtSelf = Math.floor(data.attacker.hp * hurtSelfPer / 100);
+        // let hurtSelf = Math.floor(damage * hurtSelfPer / 100);        
         data.defender.reduceHp(damage);
         data.attacker.reduceHp(hurtSelf);
 
-        let buff = new ChessBuff(lifeTime, 0, data.attacker);
+        let buff = new ChessBuff(lifeTime, 0, data.attacker, null, BuffAndDotState.bkb);
         buff.setAttrChange("bloodSacrifice", recoverPer);
         data.attacker.addBuff(buff);
         return true;

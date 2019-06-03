@@ -32,6 +32,8 @@ export enum pBattleAction {
     addDebuff,
     addDamage,
     missDamage,
+    bloodSacrificeRecoverHp,
+    bkb,
 }
 
 export enum pErrTag {
@@ -159,13 +161,19 @@ export function printBattleMsg(tag: pTag, action: pBattleAction, msg?: any) {
                 case pBattleAction.missDamage:
                     content = '护盾抵挡伤害';
                     break;
+                case pBattleAction.bloodSacrificeRecoverHp:
+                    content = `血之祭祀恢复血量${msg.hp}`;
+                    break;
                 case pBattleAction.banish:
                     break;
                 case pBattleAction.miss:
                     content = `${msg.defender.printName} 闪避了 ${msg.attacker.printName} 的攻击`;
                     break;
                 case pBattleAction.cdTime:
-                    content = `${msg.skillName} 技能cd：${msg.cd}`
+                    content = `${msg.skillName} 技能cd：${msg.cd}`;
+                    break;
+                case pBattleAction.bkb:
+                    content = `${msg.defender.printName} 对技能免疫`;
                     break;
                 default:
                     break;

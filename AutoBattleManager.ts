@@ -3,6 +3,7 @@ import { raceBuffConfig, careerBuffConfig, dirConfig } from "./Config/AutoBattle
 import { RaceSkill, CareerSkill } from "./Model/ChessSkill";
 import { printErrMsg, pErrTag, printDefault, printBattleMsg, pTag, pBattleAction, printChessTable } from "./OutPut/Printer";
 import { LayoutInfo } from "./Input/InputCache";
+import { g_OutputCache } from "./OutPut/OutPutCache";
 
 export enum Enum_Mode {
     normal = 1,
@@ -101,6 +102,7 @@ class AutoBattleManager {
             console.log("Game over!");
         } else if (this._npcListB.length == 0) {
             this._isStart = false;
+            g_OutputCache.isWin = true;
             console.log("Win!");
         }
         if (!this._isStart) {
@@ -125,6 +127,7 @@ class AutoBattleManager {
         if (!layoutA || !layoutB) {
             return;
         }
+        g_OutputCache.isWin = false;
         this._matchIdx = matchIdx;
         printDefault("autobattleManager start");
         this.clear();
@@ -227,7 +230,7 @@ class AutoBattleManager {
                         raceNum += 1;
                         if (element[raceNum]) {
                             printDefault("raceNum:" + raceNum);
-                            console.log("触发种族buff:", element[raceNum]);
+                            // console.log("触发种族buff:", element[raceNum]);
                             let raceSkill = new RaceSkill(element[raceNum], Number(key), npc.isTeamA);
                             raceSkill.play();
                         }
@@ -254,7 +257,7 @@ class AutoBattleManager {
                         const npc = tempList[baseId];
                         careerNum += 1;
                         if (element[careerNum]) {
-                            console.log("触发职业buff:", element[careerNum]);
+                            // console.log("触发职业buff:", element[careerNum]);
                             let careerSkill = new CareerSkill(element[careerNum], Number(key), npc.isTeamA);
                             careerSkill.play();
                         }
@@ -375,7 +378,7 @@ class AutoBattleManager {
         let chessTable = this.chessTable;
         for (let i = 1; i < 9; i++) {
             for (let dir = 0; dir < 8; dir++) {
-                let dirT = dirConfig[i];
+                let dirT = dirConfig[dir];
                 let x = center.x + dirT.x * i;
                 let y = center.y + dirT.y * i;
                 if (this.isInChessTable(x, y) && !chessTable[x][y]) {
