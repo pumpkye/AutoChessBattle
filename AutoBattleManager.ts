@@ -452,7 +452,7 @@ class AutoBattleManager {
     }
 }
 
-export var g_AutoBattleManager = new AutoBattleManager()
+export const g_AutoBattleManager = new AutoBattleManager()
 
 class DpsInfo {
     matchIdx = 0;

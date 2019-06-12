@@ -176,7 +176,7 @@ class Util {
     }
 }
 
-export var g_Util = new Util();
+export const g_Util = new Util();
 
 export interface BuffArr {
     /**

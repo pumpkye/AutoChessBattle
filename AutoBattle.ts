@@ -67,5 +67,5 @@ class AutoBattle {
 /**
  * 提供外部调用AutoBattle的接口
  */
-export var g_AutoBattle = new AutoBattle()
+export const g_AutoBattle = new AutoBattle()
 
