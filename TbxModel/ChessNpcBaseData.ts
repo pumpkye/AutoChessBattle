@@ -23,6 +23,7 @@ export class ChessNpcBaseData {
     career = 0;
     mvStep = 0;
     type = 0;
+    quality = 0;
     /**
      * @description 通过baseId从配置文件中读取数据
      * @param baseId 

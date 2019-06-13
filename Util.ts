@@ -1,6 +1,5 @@
 import { ChessNpc } from "./Model/ChessNpc";
 import { attackRangeConfig, dirConfig, raceBuffConfig, careerBuffConfig } from "./Config/AutoBattleConfig";
-import { printDefault } from "./OutPut/Printer";
 import { ChessNpcInfo } from "./Input/InputCache";
 import { WorsConfig } from "./Config/WordsConfig";
 
